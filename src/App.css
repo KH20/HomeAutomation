@@ -36,3 +36,26 @@
     transform: rotate(360deg);
   }
 }
+
+.grid{
+	display:flex;
+
+}
+
+.makeStyles-root-1{
+	margin:1em;
+	min-width: 250px;
+}
+
+.MuiCardContent-root{
+	padding-left:0 !important;
+	padding-right:0 !important;
+}
+
+.cardParameters{
+	display:flex;
+	justify-content: space-evenly;
+	/* background-color: yellow; */
+	text-align: center;
+	height:75px;
+}
