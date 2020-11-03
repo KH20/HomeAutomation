@@ -42,6 +42,18 @@ function App() {
 				light="250"
 				noise="40"
 				/>
+			<ImgMediaCard 
+				alt="Bedroom" 
+				component="img" 
+				height="140" 
+				image="bedroom.png" 
+				title="Bedroom" 
+				heading="Bedroom" 
+				temp="20"
+				humid="32"
+				light="10"
+				noise="1"
+				/>
 		</div>
 
     </div>
