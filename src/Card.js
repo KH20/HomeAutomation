@@ -38,6 +38,7 @@ export default function ImgMediaCard(props) {
 				<CardParameter type="temperature" value={props.temp}/>
 				<CardParameter type="humidity" value={props.humid}/>
 				<CardParameter type="light" value={props.light}/>
+				<CardParameter type="noise" value={props.noise}/>
 			</div>
         </CardContent>
       </CardActionArea>

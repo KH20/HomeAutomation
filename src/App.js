@@ -16,6 +16,7 @@ function App() {
 				temp="23"
 				humid="40"
 				light="100" 
+				noise="10"
 				/>
 			<ImgMediaCard 
 				alt="Kitchen" 
@@ -27,6 +28,7 @@ function App() {
 				temp="19"
 				humid="64"
 				light="476"
+				noise="12"
 				/>
 			<ImgMediaCard 
 				alt="Office" 
@@ -38,6 +40,7 @@ function App() {
 				temp="22"
 				humid="36"
 				light="250"
+				noise="40"
 				/>
 		</div>
 
