@@ -1,5 +1,5 @@
 .App {
-  text-align: center;
+
 }
 
 .App-logo {
@@ -39,17 +39,23 @@
 
 .grid{
 	display:flex;
-
+  justify-content: space-evenly;
+  flex-wrap: wrap;
 }
 
 .makeStyles-root-1{
-	margin:1em;
-	min-width: 250px;
+  min-width: 250px;
 }
 
 .MuiCardContent-root{
 	padding-left:0 !important;
-	padding-right:0 !important;
+  padding-right:0 !important;
+  text-align: center;
+}
+
+.MuiCard-root{
+  margin-top:2em;
+  min-width: 340px;
 }
 
 .cardParameters{
