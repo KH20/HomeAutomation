@@ -2,14 +2,13 @@ import logo from './logo.svg';
 import './App.css';
 import ImgMediaCard from "./Card.js";
 import ButtonAppBar from "./ButtonAppBar.js";
-
+import Details from "./Details.js";
 
 function App() {
   return (
 	  <div>
 		<ButtonAppBar page="Home"/>
 		<div className="App">
-
 			<div className="grid">
 				<ImgMediaCard 
 					alt="Living Room" 
@@ -56,6 +55,7 @@ function App() {
 					noise="1"
 					/>
 			</div>
+			<Details test="Temperature"/>
 	  </div>
 	</div>
     

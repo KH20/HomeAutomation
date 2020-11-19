@@ -61,7 +61,15 @@
 .cardParameters{
 	display:flex;
 	justify-content: space-evenly;
-	/* background-color: yellow; */
 	text-align: center;
 	height:75px;
+}
+
+.Details{
+  background-color: #e6e6e6;
+  height:500px;
+  text-align: center;
+  margin-left: 25%;
+  width:50%;
+
 }
