@@ -3,13 +3,26 @@ import ImgMediaCard from "./Card.js";
 import ButtonAppBar from "./ButtonAppBar.js";
 import React from 'react';
 import Dialog from "./Dialog";
+import {getData} from "./Utilities";
 
+let startup = 0;
 function App() {
 	const [openLivingRoom, setOpenLivingRoom] = React.useState(false);
 	const [openKitchen, setOpenKitchen] = React.useState(false);
 	const [openOffice, setOpenOffice] = React.useState(false);
 	const [openBedroom, setOpenBedroom] = React.useState(false);
-  
+	const [roomAttributes, setRoomAttributes] = React.useState(null);
+	
+	async function initialiseData() {
+		let data = await getData();
+		setRoomAttributes(data);
+		startup = 1;
+	}
+
+	//Initialises the state data with the JSON/database data.
+	if(!startup)
+		initialiseData();
+
 	const handleOpen = (room) => {
 
 		switch(room){
@@ -50,7 +63,6 @@ function App() {
 	  setOpenBedroom(false);
 	};
 
-
   return (
 	  <div>
 		<ButtonAppBar page="Home"/>
@@ -64,10 +76,10 @@ function App() {
 							image="lr.png" 
 							title="Living Room" 
 							heading="Living Room" 
-							temp="23"
-							humid="40"
-							light="100" 
-							noise="10"
+							temp={roomAttributes.livingroom.attributes.temperature}
+							humid={roomAttributes.livingroom.attributes.humidity}
+							light={roomAttributes.livingroom.attributes.light}
+							noise={roomAttributes.livingroom.attributes.noise}
 							/>
 					</div>
 					<Dialog handleClose={handleClose} handleOpen={openLivingRoom} maxWidth="lg" title="Living Room" body="Test"/>
@@ -81,10 +93,10 @@ function App() {
 							image="kitchen.png" 
 							title="Kitchen" 
 							heading="Kitchen" 
-							temp="19"
-							humid="64"
-							light="476"
-							noise="12"
+							temp={roomAttributes.kitchen.attributes.temperature}
+							humid={roomAttributes.kitchen.attributes.humidity}
+							light={roomAttributes.kitchen.attributes.light}
+							noise={roomAttributes.kitchen.attributes.noise}
 							/>
 					</div>
 					<Dialog handleClose={handleClose} handleOpen={openKitchen} maxWidth="lg" title="Kitchen" body="Test"/>
@@ -98,10 +110,10 @@ function App() {
 							image="office.png" 
 							title="Office" 
 							heading="Office" 
-							temp="22"
-							humid="36"
-							light="250"
-							noise="40"
+							temp={roomAttributes.office.attributes.temperature}
+							humid={roomAttributes.office.attributes.humidity}
+							light={roomAttributes.office.attributes.light}
+							noise={roomAttributes.office.attributes.noise}
 							/>
 					</div>
 					<Dialog handleClose={handleClose} handleOpen={openOffice} maxWidth="lg" title="Office" body="Test"/>
@@ -115,10 +127,10 @@ function App() {
 							image="bedroom.png" 
 							title="Bedroom" 
 							heading="Bedroom" 
-							temp="20"
-							humid="32"
-							light="10"
-							noise="1"
+							temp={roomAttributes.bedroom.attributes.temperature}
+							humid={roomAttributes.bedroom.attributes.humidity}
+							light={roomAttributes.bedroom.attributes.light}
+							noise={roomAttributes.bedroom.attributes.noise}
 							/>
 					</div>
 					<Dialog handleClose={handleClose} handleOpen={openBedroom} maxWidth="lg" title="Bedroom" body="Test"/>
@@ -129,10 +141,6 @@ function App() {
 	</div>
     
   );
-
-  
 }
-
-
 
 export default App;

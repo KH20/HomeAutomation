@@ -1,0 +1,36 @@
+{
+	"rooms": {
+	  "livingroom":{
+		"attributes": {
+		  "temperature": 25,
+		  "humidity": 30,
+		  "light": 100,
+		  "noise": 20
+		}
+	  },
+	  "bedroom":{
+		"attributes": {
+		  "temperature": 21,
+		  "humidity": 37,
+		  "light": 1,
+		  "noise": 1
+		}
+	  },
+	  "office":{
+		"attributes": {
+		  "temperature": 22,
+		  "humidity": 47,
+		  "light": 200,
+		  "noise": 81
+		}
+	  },
+	  "kitchen":{
+		"attributes": {
+		  "temperature": 31,
+		  "humidity": 65,
+		  "light": 187,
+		  "noise": 65
+		}
+	  }
+	}
+}
