@@ -5,23 +5,12 @@ import React from 'react';
 import Dialog from "./Dialog";
 import {getData} from "./Utilities";
 
-let startup = 0;
 function App() {
 	const [openLivingRoom, setOpenLivingRoom] = React.useState(false);
 	const [openKitchen, setOpenKitchen] = React.useState(false);
 	const [openOffice, setOpenOffice] = React.useState(false);
 	const [openBedroom, setOpenBedroom] = React.useState(false);
-	const [roomAttributes, setRoomAttributes] = React.useState(null);
-	
-	async function initialiseData() {
-		let data = await getData();
-		setRoomAttributes(data);
-		startup = 1;
-	}
-
-	//Initialises the state data with the JSON/database data.
-	if(!startup)
-		initialiseData();
+	const [roomAttributes, setRoomAttributes] = React.useState(getData());
 
 	const handleOpen = (room) => {
 
@@ -62,7 +51,7 @@ function App() {
 	  setOpenOffice(false);
 	  setOpenBedroom(false);
 	};
-
+	console.log(roomAttributes);
   return (
 	  <div>
 		<ButtonAppBar page="Home"/>
