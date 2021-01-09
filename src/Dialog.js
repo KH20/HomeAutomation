@@ -60,7 +60,7 @@ return (
         </DialogTitle>
         <DialogContent dividers>
           <Typography gutterBottom>
-            {props.body}
+            {props.children}
           </Typography>
         </DialogContent>
         <DialogActions>

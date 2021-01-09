@@ -4,13 +4,18 @@ import ButtonAppBar from "./ButtonAppBar.js";
 import React from 'react';
 import Dialog from "./Dialog";
 import {getData} from "./Utilities";
+import { DialogContent } from '@material-ui/core';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip} from "recharts";
+
+let data = getData();
+let rooms = [];
+const roomData = [{"name": "06:00", "Temperature": 23}, {"name":"07:00", "Temperature": 26}, {"name":"08:00", "Temperature": 21}, {"name":"09:00", "Temperature": 16},{"name":"10:00", "Temperature": 30}];
+for(let room in data){rooms.push(room)}
 
 
 function App() {
-	let rooms = [];
-
-	const [roomAttributes, setRoomAttributes] = React.useState(getData());
-	for(let room in roomAttributes){rooms.push(room)}
+	
+	const [roomAttributes, setRoomAttributes] = React.useState(data);
 	const [openRoom, setOpenRoom] = React.useState("");	
 
 	const handleOpen = (room) => {
@@ -42,9 +47,23 @@ function App() {
 								humid={roomAttributes[room].attributes.humidity}
 								light={roomAttributes[room].attributes.light}
 								noise={roomAttributes[room].attributes.noise}
-								/>
+							/>
 						</div>
-						<Dialog handleClose={handleClose} handleOpen={openRoom === room} maxWidth="lg" title={capitaliseAllWords(room,"_")} body="Test"/>
+						<Dialog handleClose={handleClose} handleOpen={openRoom === room} maxWidth="lg" title={capitaliseAllWords(room,"_")}>
+							<DialogContent>
+								<div className="DialogChart">
+									<center>
+									<LineChart width={800} height={300} data={roomData} margin={{ top: 5, right: 40, bottom: 5, left: 0 }}>
+										<Line type="monotone" dataKey="Temperature" stroke="#8884d8" />
+										<CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
+										<XAxis dataKey="name" />
+										<YAxis />
+										<Tooltip />
+									</LineChart>
+									</center>
+								</div>
+							</DialogContent>
+						</Dialog>
 					</div>
 				))}
 
@@ -68,7 +87,6 @@ function capitaliseAllWords(text, splitter){
 		text = text[0].toUpperCase() + text.substring(1);
 		return text;
 	}
-	
 }
 
 export default App;
