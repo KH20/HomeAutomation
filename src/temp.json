@@ -1,6 +1,6 @@
 {
 	"rooms": {
-	  "livingroom":{
+	  "living_room":{
 		"attributes": {
 		  "temperature": 25,
 		  "humidity": 30,

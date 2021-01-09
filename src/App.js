@@ -5,131 +5,70 @@ import React from 'react';
 import Dialog from "./Dialog";
 import {getData} from "./Utilities";
 
+
 function App() {
-	const [openLivingRoom, setOpenLivingRoom] = React.useState(false);
-	const [openKitchen, setOpenKitchen] = React.useState(false);
-	const [openOffice, setOpenOffice] = React.useState(false);
-	const [openBedroom, setOpenBedroom] = React.useState(false);
+	let rooms = [];
+
 	const [roomAttributes, setRoomAttributes] = React.useState(getData());
+	for(let room in roomAttributes){rooms.push(room)}
+	const [openRoom, setOpenRoom] = React.useState("");	
 
 	const handleOpen = (room) => {
+		console.log(room);
 
-		switch(room){
-			case "livingroom":
-				setOpenLivingRoom(true);
-				setOpenKitchen(false);
-				setOpenOffice(false);
-				setOpenBedroom(false);
-				return;
-			case "kitchen":
-				setOpenKitchen(true);
-				setOpenLivingRoom(false);
-				setOpenOffice(false);
-				setOpenBedroom(false);
-				return;
-			case "office":
-				setOpenKitchen(false);
-				setOpenLivingRoom(false);
-				setOpenOffice(true);
-				setOpenBedroom(false);
-				return;
-			case "bedroom":
-				setOpenKitchen(false);
-				setOpenLivingRoom(false);
-				setOpenOffice(false);
-				setOpenBedroom(true);
-				return;
-			default:
-				handleClose();
-				return;
-		}
+		setOpenRoom(room);
 	};
   
 	const handleClose = () => {
-	  setOpenLivingRoom(false);
-	  setOpenKitchen(false);
-	  setOpenOffice(false);
-	  setOpenBedroom(false);
+		//for loop that closes all rooms
+		setOpenRoom("");
 	};
-	console.log(roomAttributes);
-  return (
+
+  	return (
 	  <div>
 		<ButtonAppBar page="Home"/>
 		<div className="App">
 			<div className="grid">
-				<div className="room">
-					<div type="button" onClick={() => handleOpen("livingroom")}>
-						<ImgMediaCard 
-							alt="Living Room" 
-							component="img" 
-							image="lr.png" 
-							title="Living Room" 
-							heading="Living Room" 
-							temp={roomAttributes.livingroom.attributes.temperature}
-							humid={roomAttributes.livingroom.attributes.humidity}
-							light={roomAttributes.livingroom.attributes.light}
-							noise={roomAttributes.livingroom.attributes.noise}
-							/>
+				{rooms.map(room => (
+					<div className="room">
+						<div type="button" onClick={() => handleOpen(room)}>
+							<ImgMediaCard 
+								alt={capitaliseAllWords(room,"_")}
+								component="img" 
+								image={room + ".png"}
+								title={capitaliseAllWords(room,"_")}
+								heading={capitaliseAllWords(room,"_")}
+								temp={roomAttributes[room].attributes.temperature}
+								humid={roomAttributes[room].attributes.humidity}
+								light={roomAttributes[room].attributes.light}
+								noise={roomAttributes[room].attributes.noise}
+								/>
+						</div>
+						<Dialog handleClose={handleClose} handleOpen={openRoom === room} maxWidth="lg" title={capitaliseAllWords(room,"_")} body="Test"/>
 					</div>
-					<Dialog handleClose={handleClose} handleOpen={openLivingRoom} maxWidth="lg" title="Living Room" body="Test"/>
-				</div>
+				))}
 
-				<div className="room">
-					<div type="button" onClick={() => handleOpen("kitchen")}>
-						<ImgMediaCard 
-							alt="Kitchen" 
-							component="img" 
-							image="kitchen.png" 
-							title="Kitchen" 
-							heading="Kitchen" 
-							temp={roomAttributes.kitchen.attributes.temperature}
-							humid={roomAttributes.kitchen.attributes.humidity}
-							light={roomAttributes.kitchen.attributes.light}
-							noise={roomAttributes.kitchen.attributes.noise}
-							/>
-					</div>
-					<Dialog handleClose={handleClose} handleOpen={openKitchen} maxWidth="lg" title="Kitchen" body="Test"/>
-				</div>
-
-				<div className="room">
-					<div type="button" onClick={() => handleOpen("office")}>
-						<ImgMediaCard 
-							alt="Office" 
-							component="img" 
-							image="office.png" 
-							title="Office" 
-							heading="Office" 
-							temp={roomAttributes.office.attributes.temperature}
-							humid={roomAttributes.office.attributes.humidity}
-							light={roomAttributes.office.attributes.light}
-							noise={roomAttributes.office.attributes.noise}
-							/>
-					</div>
-					<Dialog handleClose={handleClose} handleOpen={openOffice} maxWidth="lg" title="Office" body="Test"/>
-				</div>
-
-				<div className="room">
-					<div type="button" onClick={() => handleOpen("bedroom")}>
-						<ImgMediaCard 
-							alt="Bedroom" 
-							component="img" 
-							image="bedroom.png" 
-							title="Bedroom" 
-							heading="Bedroom" 
-							temp={roomAttributes.bedroom.attributes.temperature}
-							humid={roomAttributes.bedroom.attributes.humidity}
-							light={roomAttributes.bedroom.attributes.light}
-							noise={roomAttributes.bedroom.attributes.noise}
-							/>
-					</div>
-					<Dialog handleClose={handleClose} handleOpen={openBedroom} maxWidth="lg" title="Bedroom" body="Test"/>
-				</div>
 			</div>
-			{/* <Details test="Temperature"/> */}
 	  </div>
 	</div>
     
   );
+}
+
+function capitaliseAllWords(text, splitter){
+	const words = text.split(splitter);
+	let word = "";
+	if(words.length > 1){
+		for (let i = 0; i < words.length; i++) {
+			word += words[i][0].toUpperCase() + words[i].substring(1) + " ";
+		}
+		return word;
+	}
+	else{
+		text = text[0].toUpperCase() + text.substring(1);
+		return text;
+	}
+	
 }
 
 export default App;

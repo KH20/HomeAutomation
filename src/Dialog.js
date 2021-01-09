@@ -64,9 +64,12 @@ return (
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={props.handleClose} color="primary">
-            Save changes
-          </Button>
+			<Button autoFocus onClick={props.handleClose} color="secondary">
+            	Cancel
+          	</Button>
+          	<Button autoFocus onClick={props.handleClose} color="primary">
+            	Save changes
+          	</Button>
         </DialogActions>
       </Dialog>
     </div>
