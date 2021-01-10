@@ -6,7 +6,8 @@
 		  "humidity": 30,
 		  "light": 100,
 		  "noise": 20
-		}
+		},
+		"media": true
 	  },
 	  "bedroom":{
 		"attributes": {
@@ -14,7 +15,8 @@
 		  "humidity": 37,
 		  "light": 1,
 		  "noise": 1
-		}
+		},
+		"media": true
 	  },
 	  "office":{
 		"attributes": {
@@ -22,14 +24,24 @@
 		  "humidity": 47,
 		  "light": 200,
 		  "noise": 81
-		}
+		},
+		"media": true
 	  },
 	  "kitchen":{
 		"attributes": {
 		  "temperature": 31,
 		  "humidity": 65,
 		  "light": 187
-		}
+		},
+		"media": true
+	  },
+	  "bathroom":{
+		"attributes": {
+		  "temperature": 8,
+		  "humidity": 80,
+		  "light": 162
+		},
+		"media": false
 	  }
 	}
 }

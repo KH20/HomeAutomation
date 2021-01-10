@@ -41,7 +41,7 @@ function App() {
 							<ImgMediaCard 
 								alt={capitaliseAllWords(room,"_")}
 								component="img" 
-								image={room + ".png"}
+								image={mediaExistsForRoom(roomAttributes, room)}
 								title={capitaliseAllWords(room,"_")}
 								heading={capitaliseAllWords(room,"_")}
 								sensors={roomAttributes[room].attributes}
@@ -86,6 +86,13 @@ function capitaliseAllWords(text, splitter){
 		text = text[0].toUpperCase() + text.substring(1);
 		return text;
 	}
+}
+
+function mediaExistsForRoom(roomAttributes, room){
+	if(roomAttributes[room].media)
+		return (room + ".png");
+	else
+		return ("house.png");
 }
 
 export default App;
