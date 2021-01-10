@@ -3,6 +3,7 @@ import ImgMediaCard from "./Card.js";
 import ButtonAppBar from "./ButtonAppBar.js";
 import React from 'react';
 import Dialog from "./Dialog";
+import DialogTabs from "./DialogTabs";
 import {getData} from "./Utilities";
 import { DialogContent } from '@material-ui/core';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip} from "recharts";
@@ -51,6 +52,7 @@ function App() {
 						</div>
 						<Dialog handleClose={handleClose} handleOpen={openRoom === room} maxWidth="lg" title={capitaliseAllWords(room,"_")}>
 							<DialogContent>
+								<DialogTabs sensors={roomAttributes[room].attributes}/>
 								<div className="DialogChart">
 									<center>
 									<LineChart width={800} height={300} data={roomData} margin={{ top: 5, right: 40, bottom: 5, left: 0 }}>
