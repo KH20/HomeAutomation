@@ -89,10 +89,15 @@ function capitaliseAllWords(text, splitter){
 }
 
 function mediaExistsForRoom(roomAttributes, room){
-	if(roomAttributes[room].media)
+	try{
+		if(roomAttributes[room].media)
 		return (room + ".png");
-	else
+		else
+			return ("house.png");
+	}
+	catch(err){
 		return ("house.png");
+	}
 }
 
 export default App;

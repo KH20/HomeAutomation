@@ -42,6 +42,40 @@
 		  "light": 162
 		},
 		"media": false
+	  },
+	  "test1":{
+		"attributes": {
+		  "temperature": 8,
+		  "humidity": 80,
+		  "light": 162
+		},
+		"media": false
+	  },
+	  "test2":{
+		"attributes": {
+		  "temperature": 8,
+		  "humidity": 80,
+		  "light": 162,
+		  "noise": 1
+		},
+		"media": false
+	  },
+	  "test3":{
+		"attributes": {
+		  "temperature": 8,
+		  "humidity": 80,
+		  "light": 162
+		},
+		"media": false
+	  },
+	  "test4":{
+		"attributes": {
+		  "temperature": 8,
+		  "humidity": 80,
+		  "light": 162,
+		  "noise": 1
+		},
+		"media": false
 	  }
 	}
 }
