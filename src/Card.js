@@ -18,6 +18,12 @@ const useStyles = makeStyles({
 export default function ImgMediaCard(props) {
   const classes = useStyles();
 
+console.log(props.sensors);
+	let sensors = [];
+	for(let sensor in props.sensors){
+		sensors.push(sensor)
+	}
+	console.log(sensors);
   return (
     <Card className={classes.root}>
       <CardActionArea>
@@ -33,10 +39,11 @@ export default function ImgMediaCard(props) {
             {props.heading}
           </Typography>
 			<div className="cardParameters">
-				<CardParameter type="temperature" value={props.temp}/>
-				<CardParameter type="humidity" value={props.humid}/>
-				<CardParameter type="light" value={props.light}/>
-				<CardParameter type="noise" value={props.noise}/>
+
+				{sensors.map(sensor => (
+				<CardParameter type={sensor} value={props.sensors[sensor]}/>
+				))}
+
 			</div>
         </CardContent>
       </CardActionArea>

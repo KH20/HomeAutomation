@@ -44,10 +44,7 @@ function App() {
 								image={room + ".png"}
 								title={capitaliseAllWords(room,"_")}
 								heading={capitaliseAllWords(room,"_")}
-								temp={roomAttributes[room].attributes.temperature}
-								humid={roomAttributes[room].attributes.humidity}
-								light={roomAttributes[room].attributes.light}
-								noise={roomAttributes[room].attributes.noise}
+								sensors={roomAttributes[room].attributes}
 							/>
 						</div>
 						<Dialog handleClose={handleClose} handleOpen={openRoom === room} maxWidth="lg" title={capitaliseAllWords(room,"_")}>

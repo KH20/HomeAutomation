@@ -28,8 +28,7 @@
 		"attributes": {
 		  "temperature": 31,
 		  "humidity": 65,
-		  "light": 187,
-		  "noise": 65
+		  "light": 187
 		}
 	  }
 	}
