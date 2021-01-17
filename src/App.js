@@ -10,32 +10,38 @@ import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip} from "recharts";
 
 let data = getData();
 let rooms = [];
-const roomData = [{"name": "06:00", "Temperature": 23}, {"name":"07:00", "Temperature": 26}, {"name":"08:00", "Temperature": 21}, {"name":"09:00", "Temperature": 16},{"name":"10:00", "Temperature": 30}];
-for(let room in data){rooms.push(room)}
+let sensorDataArray = [];
+const roomData = {"living_room" : [{"name": "06:00", "Temperature": 23}, {"name":"07:00", "Temperature": 26}, {"name":"08:00", "Temperature": 21}, {"name":"09:00", "Temperature": 16},{"name":"10:00", "Temperature": 30}],
+	"bedroom" : [{"name": "06:00", "Temperature": 13}, {"name":"07:00", "Temperature": 14}, {"name":"08:00", "Temperature": 14}, {"name":"09:00", "Temperature": 14},{"name":"10:00", "Temperature": 11}]};
 
+for(let room in data){rooms.push(room)}
 
 function App() {
 	
 	const [roomAttributes, setRoomAttributes] = React.useState(data);
 	const [openRoom, setOpenRoom] = React.useState("");	
+	const [openTab, setOpenTab] = React.useState("");
 
 	const handleOpen = (room) => {
-		console.log(room);
-
 		setOpenRoom(room);
 	};
   
 	const handleClose = () => {
 		//for loop that closes all rooms
 		setOpenRoom("");
+		setOpenTab("");
 	};
+
+	const handleOpenTab = (attribute) => {
+		setOpenTab(attribute);
+	}
 
   	return (
 	  <div>
 		<ButtonAppBar page="Home"/>
 		<div className="App">
 			<div className="grid">
-				{rooms.map(room => (
+				{rooms.map((room, index) => (
 					<div className="room">
 						<div type="button" onClick={() => handleOpen(room)}>
 							<ImgMediaCard 
@@ -47,13 +53,14 @@ function App() {
 								sensors={roomAttributes[room].attributes}
 							/>
 						</div>
+
 						<Dialog handleClose={handleClose} handleOpen={openRoom === room} maxWidth="lg" title={capitaliseAllWords(room,"_")}>
 							<DialogContent>
-								<DialogTabs sensors={roomAttributes[room].attributes}/>
+								<DialogTabs sensors={roomAttributes[room].attributes} />
 								<div className="DialogChart">
 									<center>
-									<LineChart width={800} height={300} data={roomData} margin={{ top: 5, right: 40, bottom: 5, left: 0 }}>
-										<Line type="monotone" dataKey="Temperature" stroke="#8884d8" />
+									<LineChart width={800} height={300} data={roomData[room]} margin={{ top: 5, right: 40, bottom: 5, left: 0 }}>
+										<Line type="monotone" dataKey="Temperature" stroke="#8884d8" strokeWidth="3"/>
 										<CartesianGrid stroke="#ccc" strokeDasharray="5 5" />
 										<XAxis dataKey="name" />
 										<YAxis />
@@ -65,7 +72,6 @@ function App() {
 						</Dialog>
 					</div>
 				))}
-
 			</div>
 	  </div>
 	</div>
