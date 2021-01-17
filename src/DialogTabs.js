@@ -14,8 +14,10 @@ export default function CenteredTabs(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
+
   const handleChange = (event, newValue) => {
-    setValue(newValue);
+	setValue(newValue);
+	props.onChange(event.currentTarget.textContent)
   };
   
   let sensors = [];
@@ -26,7 +28,7 @@ export default function CenteredTabs(props) {
   return (
       <Tabs
         value={value}
-        onChange={handleChange}
+        onChange={(event, value) => handleChange(event, value)}
         indicatorColor="primary"
         textColor="primary"
         centered
