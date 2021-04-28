@@ -1,7 +1,7 @@
 import './App.css';
 import ImgMediaCard from "./Card.js";
 import ButtonAppBar from "./ButtonAppBar.js";
-import React from 'react';
+import React, {useEffect} from 'react';
 import Dialog from "./Dialog";
 import DialogTabs from "./DialogTabs";
 import {getData} from "./Utilities";
@@ -14,12 +14,9 @@ let options = {
 	clientId: 1
 };
 
-let client = mqtt.connect("ws://192.168.0.29:9001", options);
-client.subscribe("home/living_room/temperature");
-client.subscribe("home/living_room/humidity");
-client.subscribe("home/living_room/light");
-client.subscribe("home/living_room/noise");
-client.on('connect', () => console.log("CONNECTED TO MQTT"));
+
+
+
 let data = getData();
 let rooms = [];
 const roomData = {
@@ -38,27 +35,37 @@ function App() {
 	const [roomAttributes, setRoomAttributes] = React.useState(data);
 	const [openRoom, setOpenRoom] = React.useState("");	
 	const [openTab, setOpenTab] = React.useState("Temperature");
+	const [newValue, setNewValue] = React.useState(null);
+
+	useEffect(() => {
+		const client = mqtt.connect("ws://192.168.0.29:9001", options);
+		client.subscribe("home/living_room/temperature");
+		client.subscribe("home/living_room/humidity");
+		client.subscribe("home/living_room/light");
+		client.subscribe("home/living_room/noise");
+		client.on('connect', () => console.log("CONNECTED TO MQTT"));
+
+		client.on('message', function (topic, message) {
+			note = parseFloat(message);
+			let temp_data = roomAttributes;
+			
+			// Updates React state with message 
+			switch(topic){
+				case "home/living_room/temperature":
+					temp_data["living_room"].attributes.temperature = note;
+					setRoomAttributes({...temp_data});
+					break;
+	
+				default:
+					break;
+			}
+			console.log(roomAttributes);
+		});
+	  }, []);
 
 	let note;
 
-	client.on('message', function (topic, message) {
-		note = message.toString();
-		let temp_data = data;
-		
-		// Updates React state with message 
-		switch(topic){
-			case "home/living_room/temperature":
-				temp_data.living_room.attributes.temperature = note;
-				setRoomAttributes(temp_data);
-				break;
 
-			default:
-				break;
-		}
-		console.log(roomAttributes);
-	});
-
-	client.on("disconnect", () => client.end());
 
 	const handleOpen = (room) => {
 		setOpenRoom(room);
@@ -80,7 +87,7 @@ function App() {
 		<ButtonAppBar page="Home"/>
 		<div className="App">
 			<div className="grid">
-				{rooms.map((room, index) => (
+				{Object.keys(roomAttributes).map((room, index) => (
 					<div className="room" key={room + index}>
 						<div type="button" onClick={() => handleOpen(room)}>
 							<ImgMediaCard 
@@ -91,6 +98,7 @@ function App() {
 								heading={capitaliseAllWords(room,"_")}
 								sensors={roomAttributes[room].attributes}
 								room={room}
+								mqttVal={newValue}
 							/>
 						</div>
 

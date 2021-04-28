@@ -39,7 +39,7 @@ export default function ImgMediaCard(props) {
           </Typography>
 			<div className="cardParameters">
 
-				{sensors.map((sensor, room, index) => (
+				{sensors.map((sensor) => (
 				<CardParameter type={sensor} value={props.sensors[sensor]} key={props.room+ "_" + sensor}/>
 				))}
 
