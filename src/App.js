@@ -8,14 +8,12 @@ import {getData} from "./Utilities";
 import { DialogContent } from '@material-ui/core';
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip} from "recharts";
 import mqtt from "mqtt";
+import { EmojiObjects } from '@material-ui/icons';
 
 let options = {
 	protocol: "websockets",
 	clientId: 1
 };
-
-
-
 
 let data = getData();
 let rooms = [];
@@ -25,8 +23,6 @@ const roomData = {
 	"bedroom" : [
 		{"name": "06:00", "Temperature": 13}, {"name":"07:00", "Temperature": 14}, {"name":"08:00", "Temperature": 14}, {"name":"09:00", "Temperature": 14},{"name":"10:00", "Temperature": 11}]
 };
-
-
 
 for(let room in data){rooms.push(room)}
 
@@ -39,33 +35,24 @@ function App() {
 
 	useEffect(() => {
 		const client = mqtt.connect("ws://192.168.0.29:9001", options);
-		client.subscribe("home/living_room/temperature");
-		client.subscribe("home/living_room/humidity");
-		client.subscribe("home/living_room/light");
-		client.subscribe("home/living_room/noise");
+		for(let room in Object.keys(roomAttributes)){
+			for(let sensor in Object.keys(roomAttributes["living_room"].attributes)){
+				let topic = "home/" + Object.keys(roomAttributes)[room] +"/" + Object.keys(roomAttributes["living_room"].attributes)[sensor];
+				client.subscribe(topic);
+			}
+			
+		}
 		client.on('connect', () => console.log("CONNECTED TO MQTT"));
-
 		client.on('message', function (topic, message) {
 			note = parseFloat(message);
 			let temp_data = roomAttributes;
-			
-			// Updates React state with message 
-			switch(topic){
-				case "home/living_room/temperature":
-					temp_data["living_room"].attributes.temperature = note;
-					setRoomAttributes({...temp_data});
-					break;
-	
-				default:
-					break;
-			}
-			console.log(roomAttributes);
+			let keys = topic.split("/");
+			temp_data[keys[1]].attributes[keys[2]] = note;
+			setRoomAttributes({...temp_data});
 		});
 	  }, []);
 
 	let note;
-
-
 
 	const handleOpen = (room) => {
 		setOpenRoom(room);
@@ -79,7 +66,6 @@ function App() {
 
 	const handleOpenTab = (attribute) => {
 		setOpenTab(attribute);
-		
 	}
 
   	return (
