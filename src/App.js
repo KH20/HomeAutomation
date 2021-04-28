@@ -37,13 +37,7 @@ function App() {
 		const client = mqtt.connect("ws://192.168.0.29:9001", options);
 
 		//Subscribe to all rooms and sensors.
-		for(let room in Object.keys(roomAttributes)){
-			for(let sensor in Object.keys(roomAttributes["living_room"].attributes)){
-				let topic = "home/" + Object.keys(roomAttributes)[room] +"/" + Object.keys(roomAttributes["living_room"].attributes)[sensor];
-				client.subscribe(topic);
-			}
-			
-		}
+		client.subscribe("home/#");
 		client.on('connect', () => console.log("CONNECTED TO MQTT"));
 		client.on('message', function (topic, message) {
 			note = parseFloat(message);
