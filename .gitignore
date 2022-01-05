@@ -21,3 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+Firmware/ESP32/MQTT TCP/sdkconfig.ci
+Firmware/ESP32/MQTT TCP/sdkconfig.old
+Firmware/ESP32/MQTT TCP/sdkconfig
