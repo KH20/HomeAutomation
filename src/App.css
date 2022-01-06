@@ -1,41 +1,44 @@
-.grid{
-	display:flex;
-  justify-content: space-evenly;
-  flex-wrap: wrap;
+.grid {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
 }
 
-.makeStyles-root-1{
-  min-width: 250px;
+.makeStyles-root-1 {
+    min-width: 250px;
 }
 
-.MuiCardContent-root{
-	padding-left:0 !important;
-  padding-right:0 !important;
-  text-align: center;
+.MuiCardContent-root {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    text-align: center;
 }
 
-.MuiCard-root{
-  margin-top:2em;
-  min-width: 340px;
+.MuiCard-root {
+    margin-top: 2em;
+    min-width: 340px;
 }
 
-.cardParameters{
-	display:flex;
-	justify-content: space-evenly;
-	text-align: center;
-	height:75px;
+.cardParameters {
+    display: flex;
+    justify-content: space-evenly;
+    text-align: center;
+    height: 75px;
 }
 
-.Details{
-  background-color: #e6e6e6;
-  height:500px;
-  text-align: center;
-  margin-left: 25%;
-  width:50%;
-
+.Details {
+    background-color: #e6e6e6;
+    height: 500px;
+    text-align: center;
+    margin-left: 25%;
+    width: 50%;
 }
 
-.MuiDialog-paperWidthLg{
-	width:80%;
+.MuiDialog-paperWidthLg {
+    width: 80%;
 }
 
+.controlSwitches {
+    display: flex;
+    flex-direction: row;
+}

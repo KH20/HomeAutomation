@@ -8,7 +8,8 @@
                 "noise": 20
             },
             "controls": {
-                "lamp": true
+                "lamp": true,
+                "lamp2": true
             },
             "media": true
         },
@@ -19,7 +20,10 @@
                 "light": 1,
                 "noise": 1
             },
-            "controls": {},
+            "controls": {
+                "lamp": true,
+                "heater": true
+            },
             "media": true
         },
         "office": {

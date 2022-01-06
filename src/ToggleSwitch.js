@@ -8,7 +8,6 @@ export default function Switches(props) {
 
     const handleChange = (event, room, sensor) => {
         setState(event.target.checked);
-        console.log(!state);
         props.handleControls(room, sensor, !state);
     };
 

@@ -57,12 +57,12 @@ function App() {
         client.on("connect", () => console.log("CONNECTED TO MQTT"));
         client.on("message", function (topic, message) {
             let keys = topic.split("/");
-            let room = "home/" + keys[1];
+            let room = keys[1];
             let sensor = keys[2];
             let note;
 
             switch (room) {
-                case "home/living_room":
+                case "living_room":
                     switch (sensor) {
                         case "temperature":
                             note = parseFloat(message);
@@ -171,10 +171,10 @@ function App() {
                                     </div>
                                 </DialogContent>
                                 <DialogContent dividers>
-                                    <div>
-                                        <Typography variant="h6">
-                                            Controls
-                                        </Typography>
+                                    <Typography variant="h6">
+                                        Controls
+                                    </Typography>
+                                    <div className="controlSwitches">
                                         {Object.keys(
                                             roomAttributes[room].controls
                                         ).map((control, index) => (
