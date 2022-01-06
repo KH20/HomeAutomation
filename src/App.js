@@ -5,7 +5,7 @@ import React, { useEffect } from "react";
 import Dialog from "./Dialog";
 import DialogTabs from "./DialogTabs";
 import { getData } from "./Utilities";
-import { DialogContent } from "@material-ui/core";
+import { DialogContent, Typography } from "@material-ui/core";
 import ToggleSwitch from "./ToggleSwitch";
 import {
     LineChart,
@@ -16,7 +16,6 @@ import {
     Tooltip,
 } from "recharts";
 import mqtt from "mqtt";
-import { EmojiObjects } from "@material-ui/icons";
 
 let options = {
     protocol: "websockets",
@@ -42,15 +41,23 @@ const roomData = {
     ],
 };
 
+let controlsData = {};
+
 for (let room in data) {
     rooms.push(room);
+    controlsData[room] = {};
+    for (let control in data[room].controls) {
+        controlsData[room][control] = false;
+    }
 }
+
+console.log(controlsData);
 
 function App() {
     const [roomAttributes, setRoomAttributes] = React.useState(data);
     const [openRoom, setOpenRoom] = React.useState("");
     const [openTab, setOpenTab] = React.useState("Temperature");
-    const [livingRoomLamp, setLivingRoomLamp] = React.useState(0);
+    const [controls, setControls] = React.useState(controlsData);
     const [newValue, setNewValue] = React.useState(null);
     const client = mqtt.connect("ws://192.168.0.29:9001", options);
     useEffect(() => {
@@ -61,6 +68,7 @@ function App() {
             let keys = topic.split("/");
             let room = "home/" + keys[1];
             let sensor = keys[2];
+            let note;
 
             switch (room) {
                 case "home/living_room":
@@ -77,8 +85,6 @@ function App() {
         });
     }, []);
 
-    let note;
-
     const handleOpen = (room) => {
         setOpenRoom(room);
     };
@@ -93,9 +99,8 @@ function App() {
         setOpenTab(attribute);
     };
 
-    const handleLivingRoomLamp = (value) => {
-        setLivingRoomLamp(value);
-        client.publish("home/living_room/lamp", value.toString());
+    const handleControls = (room, sensor, value) => {
+        client.publish("home/" + room + "/" + sensor, value.toString());
     };
 
     return (
@@ -128,6 +133,9 @@ function App() {
                                 title={capitaliseAllWords(room, "_")}
                             >
                                 <DialogContent>
+                                    <Typography variant="h6">
+                                        Sensors
+                                    </Typography>
                                     <DialogTabs
                                         sensors={
                                             roomAttributes[room].attributes
@@ -171,13 +179,28 @@ function App() {
                                         </center>
                                     </div>
                                 </DialogContent>
-                                <DialogContent>
-                                    Lamp
-                                    <ToggleSwitch
-                                        handleLivingRoomLamp={
-                                            handleLivingRoomLamp
-                                        }
-                                    ></ToggleSwitch>
+                                <DialogContent dividers>
+                                    <div>
+                                        <Typography variant="h6">
+                                            Controls
+                                        </Typography>
+                                        {Object.keys(
+                                            roomAttributes[room].controls
+                                        ).map((control, index) => (
+                                            <div>
+                                                <ToggleSwitch
+                                                    handleControls={
+                                                        handleControls
+                                                    }
+                                                    control={capitaliseAllWords(
+                                                        control
+                                                    )}
+                                                    room={room}
+                                                    sensor={control}
+                                                ></ToggleSwitch>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </DialogContent>
                             </Dialog>
                         </div>

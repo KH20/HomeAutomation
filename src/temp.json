@@ -1,81 +1,92 @@
 {
-	"rooms": {
-	  "living_room":{
-		"attributes": {
-		  "temperature": 25,
-		  "humidity": 30,
-		  "light": 100,
-		  "noise": 20
-		},
-		"media": true
-	  },
-	  "bedroom":{
-		"attributes": {
-		  "temperature": 21,
-		  "humidity": 37,
-		  "light": 1,
-		  "noise": 1
-		},
-		"media": true
-	  },
-	  "office":{
-		"attributes": {
-		  "temperature": 22,
-		  "humidity": 47,
-		  "light": 200,
-		  "noise": 81
-		},
-		"media": true
-	  },
-	  "kitchen":{
-		"attributes": {
-		  "temperature": 31,
-		  "humidity": 65,
-		  "light": 187
-		},
-		"media": true
-	  },
-	  "bathroom":{
-		"attributes": {
-		  "temperature": 8,
-		  "humidity": 80,
-		  "light": 162
-		},
-		"media": false
-	  },
-	  "test1":{
-		"attributes": {
-		  "temperature": 8,
-		  "humidity": 80,
-		  "light": 162
-		},
-		"media": false
-	  },
-	  "test2":{
-		"attributes": {
-		  "temperature": 8,
-		  "humidity": 80,
-		  "light": 162,
-		  "noise": 1
-		},
-		"media": false
-	  },
-	  "test3":{
-		"attributes": {
-		  "temperature": 8,
-		  "humidity": 80,
-		  "light": 162
-		},
-		"media": false
-	  },
-	  "test4":{
-		"attributes": {
-		  "temperature": 8,
-		  "humidity": 80,
-		  "light": 162,
-		  "noise": 1
-		},
-		"media": false
-	  }
-	}
+    "rooms": {
+        "living_room": {
+            "attributes": {
+                "temperature": 25,
+                "humidity": 30,
+                "light": 100,
+                "noise": 20
+            },
+            "controls": {
+                "lamp": true
+            },
+            "media": true
+        },
+        "bedroom": {
+            "attributes": {
+                "temperature": 21,
+                "humidity": 37,
+                "light": 1,
+                "noise": 1
+            },
+            "controls": {},
+            "media": true
+        },
+        "office": {
+            "attributes": {
+                "temperature": 22,
+                "humidity": 47,
+                "light": 200,
+                "noise": 81
+            },
+            "controls": {},
+            "media": true
+        },
+        "kitchen": {
+            "attributes": {
+                "temperature": 31,
+                "humidity": 65,
+                "light": 187
+            },
+            "controls": {},
+            "media": true
+        },
+        "bathroom": {
+            "attributes": {
+                "temperature": 8,
+                "humidity": 80,
+                "light": 162
+            },
+            "controls": {},
+            "media": false
+        },
+        "test1": {
+            "attributes": {
+                "temperature": 8,
+                "humidity": 80,
+                "light": 162
+            },
+            "controls": {},
+            "media": false
+        },
+        "test2": {
+            "attributes": {
+                "temperature": 8,
+                "humidity": 80,
+                "light": 162,
+                "noise": 1
+            },
+            "controls": {},
+            "media": false
+        },
+        "test3": {
+            "attributes": {
+                "temperature": 8,
+                "humidity": 80,
+                "light": 162
+            },
+            "controls": {},
+            "media": false
+        },
+        "test4": {
+            "attributes": {
+                "temperature": 8,
+                "humidity": 80,
+                "light": 162,
+                "noise": 1
+            },
+            "controls": {},
+            "media": false
+        }
+    }
 }

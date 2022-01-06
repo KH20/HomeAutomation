@@ -69,7 +69,6 @@ export default function CustomizedDialogs(props) {
                     {props.title}
                 </DialogTitle>
                 <DialogContent dividers>
-                    Sensors
                     <Typography gutterBottom>{props.children}</Typography>
                 </DialogContent>
                 <DialogContent dividers></DialogContent>
