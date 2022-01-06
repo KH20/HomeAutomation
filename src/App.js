@@ -41,23 +41,14 @@ const roomData = {
     ],
 };
 
-let controlsData = {};
-
 for (let room in data) {
     rooms.push(room);
-    controlsData[room] = {};
-    for (let control in data[room].controls) {
-        controlsData[room][control] = false;
-    }
 }
-
-console.log(controlsData);
 
 function App() {
     const [roomAttributes, setRoomAttributes] = React.useState(data);
     const [openRoom, setOpenRoom] = React.useState("");
     const [openTab, setOpenTab] = React.useState("Temperature");
-    const [controls, setControls] = React.useState(controlsData);
     const [newValue, setNewValue] = React.useState(null);
     const client = mqtt.connect("ws://192.168.0.29:9001", options);
     useEffect(() => {
