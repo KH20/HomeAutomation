@@ -15,6 +15,8 @@
 #include "esp_event.h"
 #include "esp_netif.h"
 #include "protocol_examples_common.h"
+#include "driver/timer.h"
+#include "driver/gpio.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -27,6 +29,8 @@
 
 #include "esp_log.h"
 #include "mqtt_client.h"
+
+#define LAMP_GPIO 32
 
 static const char *TAG = "MQTT_EXAMPLE";
 
@@ -60,7 +64,7 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         msg_id = esp_mqtt_client_publish(client, "home/living_room/temperature", "45", 0, 1, 0);
         ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
 
-        msg_id = esp_mqtt_client_subscribe(client, "/topic/qos0", 0);
+        msg_id = esp_mqtt_client_subscribe(client, "home/living_room/lamp", 0);
         ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
 
         msg_id = esp_mqtt_client_subscribe(client, "/topic/qos1", 1);
@@ -86,8 +90,26 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         break;
     case MQTT_EVENT_DATA:
         ESP_LOGI(TAG, "MQTT_EVENT_DATA");
+        char topic[100];
+        char message[100];
+        memset(topic, "\0", strlen(topic));
+        memset(message, "\0", strlen(message));
+        sprintf(topic, "%.*s", event->topic_len, event->topic);
+        sprintf(message, "%.*s", event->data_len, event->data);
         printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
         printf("DATA=%.*s\r\n", event->data_len, event->data);
+        printf("%s\r\n", topic);
+        if(strcmp(topic,"home/living_room/lamp") == 0){
+            if(strcmp(message, "true") == 0){
+                printf("Lamp Turned On\r\n");
+                gpio_set_level(LAMP_GPIO, 1);
+            }
+            else{
+                printf("Lamp Turned Off\r\n");
+                gpio_set_level(LAMP_GPIO, 0);
+            }
+        }
+
         break;
     case MQTT_EVENT_ERROR:
         ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
@@ -146,6 +168,10 @@ void app_main(void)
     ESP_LOGI(TAG, "[APP] Startup..");
     ESP_LOGI(TAG, "[APP] Free memory: %d bytes", esp_get_free_heap_size());
     ESP_LOGI(TAG, "[APP] IDF version: %s", esp_get_idf_version());
+
+    gpio_reset_pin(LAMP_GPIO);
+    /* Set the GPIO as a push/pull output */
+    gpio_set_direction(LAMP_GPIO, GPIO_MODE_OUTPUT);
 
     esp_log_level_set("*", ESP_LOG_INFO);
     esp_log_level_set("MQTT_CLIENT", ESP_LOG_VERBOSE);
