@@ -17,6 +17,7 @@
 #include "protocol_examples_common.h"
 #include "driver/timer.h"
 #include "driver/gpio.h"
+#include "dht11.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -30,9 +31,43 @@
 #include "esp_log.h"
 #include "mqtt_client.h"
 
-#define LAMP_GPIO 32
+#define LIVING_ROOM_LAMP_GPIO 32
+#define LIVING_ROOM_LAMP2_GPIO 25
+#define DHT11_GPIO 27
 
 static const char *TAG = "MQTT_EXAMPLE";
+
+void sendSensorData(esp_mqtt_client_handle_t client){
+    int temp = DHT11_read().temperature;
+    int humidity = DHT11_read().humidity;
+    int msg_id;
+    char textTemp[3];
+    char textHumidity[3];
+    sprintf(textTemp, "%d", temp);
+    sprintf(textHumidity, "%d", humidity);
+    printf("Temperature is: %d\r\n", temp);
+    printf("Humidity is: %d\r\n", humidity);
+    msg_id = esp_mqtt_client_publish(client, "home/living_room/temperature", textTemp, 0, 1, 0);
+    ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
+    msg_id = esp_mqtt_client_publish(client, "home/living_room/humidity", textHumidity, 0, 1, 0);
+    ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
+}
+
+static void DHT11_Task(void *pvParameter){
+
+esp_mqtt_client_handle_t client = pvParameter;
+
+    DHT11_init(GPIO_NUM_27);
+
+    for(;;){
+        sendSensorData(client);
+        vTaskDelay(60000 / portTICK_RATE_MS);
+    }
+}
+
+void DHT11_Task_Start(esp_mqtt_client_handle_t client){
+    xTaskCreatePinnedToCore(&DHT11_Task, "DHT11 Task", 4096, client, 5, NULL, 1);
+}
 
 
 static void log_error_if_nonzero(const char *message, int error_code)
@@ -52,22 +87,33 @@ static void log_error_if_nonzero(const char *message, int error_code)
  * @param event_id The id for the received event.
  * @param event_data The data for the event, esp_mqtt_event_handle_t.
  */
+//int esp_mqtt_client_publish(esp_mqtt_client_handle_t client, const char *topic, const char *data, int len, int qos, int retain)
+//int esp_mqtt_client_subscribe(esp_mqtt_client_handle_t client, const char *topic, int qos)
 static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_t event_id, void *event_data)
 {
     ESP_LOGD(TAG, "Event dispatched from event loop base=%s, event_id=%d", base, event_id);
     esp_mqtt_event_handle_t event = event_data;
     esp_mqtt_client_handle_t client = event->client;
     int msg_id;
+    
+    
     switch ((esp_mqtt_event_id_t)event_id) {
     case MQTT_EVENT_CONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_CONNECTED");
-        msg_id = esp_mqtt_client_publish(client, "home/living_room/temperature", "45", 0, 1, 0);
-        ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
-
+        
         msg_id = esp_mqtt_client_subscribe(client, "home/living_room/lamp", 0);
         ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
 
-        msg_id = esp_mqtt_client_subscribe(client, "/topic/qos1", 1);
+        msg_id = esp_mqtt_client_subscribe(client, "home/living_room/lamp2", 0);
+        ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+
+        msg_id = esp_mqtt_client_subscribe(client, "home/bedroom/lamp", 0);
+        ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+
+        msg_id = esp_mqtt_client_subscribe(client, "req/home/living_room/temperature", 0);
+        ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
+
+        msg_id = esp_mqtt_client_subscribe(client, "req/home/living_room/humidity", 0);
         ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
 
         msg_id = esp_mqtt_client_unsubscribe(client, "/topic/qos1");
@@ -92,8 +138,6 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         ESP_LOGI(TAG, "MQTT_EVENT_DATA");
         char topic[100];
         char message[100];
-        memset(topic, "\0", strlen(topic));
-        memset(message, "\0", strlen(message));
         sprintf(topic, "%.*s", event->topic_len, event->topic);
         sprintf(message, "%.*s", event->data_len, event->data);
         printf("TOPIC=%.*s\r\n", event->topic_len, event->topic);
@@ -101,15 +145,52 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         printf("%s\r\n", topic);
         if(strcmp(topic,"home/living_room/lamp") == 0){
             if(strcmp(message, "true") == 0){
-                printf("Lamp Turned On\r\n");
-                gpio_set_level(LAMP_GPIO, 1);
+                printf("Living Room Lamp Turned On\r\n");
+                gpio_set_level(LIVING_ROOM_LAMP_GPIO, 1);
             }
             else{
-                printf("Lamp Turned Off\r\n");
-                gpio_set_level(LAMP_GPIO, 0);
+                printf("Living Room Lamp Turned Off\r\n");
+                gpio_set_level(LIVING_ROOM_LAMP_GPIO, 0);
             }
         }
-
+        else if(strcmp(topic,"home/living_room/lamp2") == 0){
+            if(strcmp(message, "true") == 0){
+                printf("Living Room Lamp2 Turned On\r\n");
+                gpio_set_level(LIVING_ROOM_LAMP2_GPIO, 1);
+            }
+            else{
+                printf("Living Room Lamp2 Turned Off\r\n");
+                gpio_set_level(LIVING_ROOM_LAMP2_GPIO, 0);
+            }
+        }
+        else if(strcmp(topic,"home/bedroom/lamp") == 0){
+            if(strcmp(message, "true") == 0){
+                printf("Bedroom Lamp2 Turned On\r\n");
+                gpio_set_level(LIVING_ROOM_LAMP2_GPIO, 1);
+            }
+            else{
+                printf("Bedroom Lamp Turned Off\r\n");
+                gpio_set_level(LIVING_ROOM_LAMP2_GPIO, 0);
+            }
+        }
+        else if(strcmp(topic,"req/home/living_room/temperature") == 0){
+            if(strcmp(message, "true") == 0){
+                int temp = DHT11_read().temperature;
+                char text[3];
+                sprintf(text, "%d", temp);
+                printf("Temperature is: %d\r\n", temp);
+                msg_id = esp_mqtt_client_publish(client, "home/living_room/temperature", text, 0, 1, 0);
+                ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
+            }
+        }
+        else if(strcmp(topic,"req/home/living_room/humidity") == 0){
+            int humidity = DHT11_read().humidity;
+            char text[3];
+            sprintf(text, "%d", humidity);
+            printf("Humidity is: %d\r\n", humidity);
+            msg_id = esp_mqtt_client_publish(client, "home/living_room/humidity", text, 0, 1, 0);
+            ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
+        }
         break;
     case MQTT_EVENT_ERROR:
         ESP_LOGI(TAG, "MQTT_EVENT_ERROR");
@@ -161,6 +242,7 @@ static void mqtt_app_start(void)
     /* The last argument may be used to pass data to the event handler, in this example mqtt_event_handler */
     esp_mqtt_client_register_event(client, ESP_EVENT_ANY_ID, mqtt_event_handler, NULL);
     esp_mqtt_client_start(client);
+    DHT11_Task_Start(client);
 }
 
 void app_main(void)
@@ -169,9 +251,11 @@ void app_main(void)
     ESP_LOGI(TAG, "[APP] Free memory: %d bytes", esp_get_free_heap_size());
     ESP_LOGI(TAG, "[APP] IDF version: %s", esp_get_idf_version());
 
-    gpio_reset_pin(LAMP_GPIO);
+    gpio_reset_pin(LIVING_ROOM_LAMP_GPIO);
+    gpio_reset_pin(LIVING_ROOM_LAMP2_GPIO);
     /* Set the GPIO as a push/pull output */
-    gpio_set_direction(LAMP_GPIO, GPIO_MODE_OUTPUT);
+    gpio_set_direction(LIVING_ROOM_LAMP_GPIO, GPIO_MODE_OUTPUT);
+    gpio_set_direction(LIVING_ROOM_LAMP2_GPIO, GPIO_MODE_OUTPUT);
 
     esp_log_level_set("*", ESP_LOG_INFO);
     esp_log_level_set("MQTT_CLIENT", ESP_LOG_VERBOSE);
@@ -192,4 +276,5 @@ void app_main(void)
     ESP_ERROR_CHECK(example_connect());
 
     mqtt_app_start();
+    
 }
