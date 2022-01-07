@@ -68,16 +68,13 @@ function App() {
                 room = keys[1];
                 sensor = keys[2];
 
-                switch (room) {
-                    case "living_room":
-                        switch (sensor) {
-                            case "temperature":
-                                note = parseFloat(message);
-                                temp_data = roomAttributes;
-                                temp_data[room].attributes[sensor] = note;
-                                setRoomAttributes({ ...temp_data });
-                                break;
-                        }
+                switch (sensor) {
+                    case "temperature":
+                    case "humidity":
+                        note = parseFloat(message);
+                        temp_data = roomAttributes;
+                        temp_data[room].attributes[sensor] = note;
+                        setRoomAttributes({ ...temp_data });
                         break;
                 }
             } else if (keys[0] === "feedback") {
