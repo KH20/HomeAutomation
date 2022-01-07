@@ -8,8 +8,8 @@
                 "noise": 20
             },
             "controls": {
-                "lamp": true,
-                "lamp2": true
+                "lamp": false,
+                "lamp2": false
             },
             "media": true
         },

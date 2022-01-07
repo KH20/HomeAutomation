@@ -50,28 +50,44 @@ function App() {
     const [openRoom, setOpenRoom] = React.useState("");
     const [openTab, setOpenTab] = React.useState("Temperature");
     const [newValue, setNewValue] = React.useState(null);
+
     const client = mqtt.connect("ws://192.168.0.29:9001", options);
     useEffect(() => {
         //Subscribe to all rooms and sensors.
-        client.subscribe("home/+/+");
+        client.subscribe("home/+/+"); //home/room/sensor
+        client.subscribe("feedback/+/+/+"); //feedback/home/room/sensor
         client.on("connect", () => console.log("CONNECTED TO MQTT"));
         client.on("message", function (topic, message) {
             let keys = topic.split("/");
-            let room = keys[1];
-            let sensor = keys[2];
-            let note;
+            let room = null;
+            let sensor = null;
+            let note = null;
+            let temp_data = null;
 
-            switch (room) {
-                case "living_room":
-                    switch (sensor) {
-                        case "temperature":
-                            note = parseFloat(message);
-                            let temp_data = roomAttributes;
-                            temp_data[keys[1]].attributes[keys[2]] = note;
-                            setRoomAttributes({ ...temp_data });
-                            break;
-                    }
-                    break;
+            if (keys[0] === "home") {
+                room = keys[1];
+                sensor = keys[2];
+
+                switch (room) {
+                    case "living_room":
+                        switch (sensor) {
+                            case "temperature":
+                                note = parseFloat(message);
+                                temp_data = roomAttributes;
+                                temp_data[room].attributes[sensor] = note;
+                                setRoomAttributes({ ...temp_data });
+                                break;
+                        }
+                        break;
+                }
+            } else if (keys[0] === "feedback") {
+                room = keys[2];
+                sensor = keys[3];
+
+                note = stringToBool(String.fromCharCode(...message));
+                temp_data = roomAttributes;
+                temp_data[room].controls[sensor] = note;
+                setRoomAttributes({ ...temp_data });
             }
         });
     }, []);
@@ -90,8 +106,17 @@ function App() {
         setOpenTab(attribute);
     };
 
-    const handleControls = (room, sensor, value) => {
-        client.publish("home/" + room + "/" + sensor, value.toString());
+    const handleControls = (room, sensor, value, isFeedback) => {
+        if (!isFeedback)
+            client.publish("home/" + room + "/" + sensor, value.toString());
+    };
+
+    const stringToBool = (message) => {
+        if (message === "true") {
+            return true;
+        } else if (message === "false") {
+            return false;
+        } else return null;
     };
 
     return (
@@ -188,6 +213,10 @@ function App() {
                                                     )}
                                                     room={room}
                                                     sensor={control}
+                                                    buttonState={
+                                                        roomAttributes[room]
+                                                            .controls[control]
+                                                    }
                                                 ></ToggleSwitch>
                                             </div>
                                         ))}

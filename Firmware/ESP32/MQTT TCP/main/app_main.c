@@ -157,20 +157,28 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
             if(strcmp(message, "true") == 0){
                 printf("Living Room Lamp Turned On\r\n");
                 gpio_set_level(LIVING_ROOM_LAMP_GPIO, 1);
+                msg_id = esp_mqtt_client_publish(client, "feedback/home/living_room/lamp", "true", 0, 1, 0);
+                ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
             }
             else{
                 printf("Living Room Lamp Turned Off\r\n");
                 gpio_set_level(LIVING_ROOM_LAMP_GPIO, 0);
+                msg_id = esp_mqtt_client_publish(client, "feedback/home/living_room/lamp", "false", 0, 1, 0);
+                ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
             }
         }
         else if(strcmp(topic,"home/living_room/lamp2") == 0){
             if(strcmp(message, "true") == 0){
                 printf("Living Room Lamp2 Turned On\r\n");
                 gpio_set_level(LIVING_ROOM_LAMP2_GPIO, 1);
+                msg_id = esp_mqtt_client_publish(client, "feedback/home/living_room/lamp2", "true", 0, 1, 0);
+                ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
             }
             else{
                 printf("Living Room Lamp2 Turned Off\r\n");
                 gpio_set_level(LIVING_ROOM_LAMP2_GPIO, 0);
+                msg_id = esp_mqtt_client_publish(client, "feedback/home/living_room/lamp2", "false", 0, 1, 0);
+                ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
             }
         }
         else if(strcmp(topic,"home/bedroom/lamp") == 0){
