@@ -37,20 +37,32 @@
 
 static const char *TAG = "MQTT_EXAMPLE";
 
+int8_t previousTemp = -128;
+int8_t previousHumidity = -128;
+
 void sendSensorData(esp_mqtt_client_handle_t client){
     int temp = DHT11_read().temperature;
     int humidity = DHT11_read().humidity;
     int msg_id;
-    char textTemp[3];
-    char textHumidity[3];
-    sprintf(textTemp, "%d", temp);
-    sprintf(textHumidity, "%d", humidity);
+
     printf("Temperature is: %d\r\n", temp);
     printf("Humidity is: %d\r\n", humidity);
-    msg_id = esp_mqtt_client_publish(client, "home/living_room/temperature", textTemp, 0, 1, 0);
-    ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
-    msg_id = esp_mqtt_client_publish(client, "home/living_room/humidity", textHumidity, 0, 1, 0);
-    ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
+
+    if(temp != previousTemp){
+        previousTemp = temp;
+        char textTemp[5];
+        sprintf(textTemp, "%d", temp);
+        msg_id = esp_mqtt_client_publish(client, "home/living_room/temperature", textTemp, 0, 1, 0);
+        ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
+    }
+    if(humidity != previousHumidity){
+        previousHumidity = humidity;
+        char textHumidity[5];
+        sprintf(textHumidity, "%d", humidity);
+        msg_id = esp_mqtt_client_publish(client, "home/living_room/humidity", textHumidity, 0, 1, 0);
+        ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
+    }
+
 }
 
 static void DHT11_Task(void *pvParameter){
@@ -116,8 +128,8 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
         msg_id = esp_mqtt_client_subscribe(client, "req/home/living_room/humidity", 0);
         ESP_LOGI(TAG, "sent subscribe successful, msg_id=%d", msg_id);
 
-        msg_id = esp_mqtt_client_unsubscribe(client, "/topic/qos1");
-        ESP_LOGI(TAG, "sent unsubscribe successful, msg_id=%d", msg_id);
+        // msg_id = esp_mqtt_client_unsubscribe(client, "/topic/qos1");
+        // ESP_LOGI(TAG, "sent unsubscribe successful, msg_id=%d", msg_id);
         break;
     case MQTT_EVENT_DISCONNECTED:
         ESP_LOGI(TAG, "MQTT_EVENT_DISCONNECTED");
@@ -125,8 +137,6 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
 
     case MQTT_EVENT_SUBSCRIBED:
         ESP_LOGI(TAG, "MQTT_EVENT_SUBSCRIBED, msg_id=%d", event->msg_id);
-        msg_id = esp_mqtt_client_publish(client, "/topic/qos0", "data", 0, 0, 0);
-        ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
         break;
     case MQTT_EVENT_UNSUBSCRIBED:
         ESP_LOGI(TAG, "MQTT_EVENT_UNSUBSCRIBED, msg_id=%d", event->msg_id);
@@ -174,18 +184,16 @@ static void mqtt_event_handler(void *handler_args, esp_event_base_t base, int32_
             }
         }
         else if(strcmp(topic,"req/home/living_room/temperature") == 0){
-            if(strcmp(message, "true") == 0){
-                int temp = DHT11_read().temperature;
-                char text[3];
-                sprintf(text, "%d", temp);
-                printf("Temperature is: %d\r\n", temp);
-                msg_id = esp_mqtt_client_publish(client, "home/living_room/temperature", text, 0, 1, 0);
-                ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
-            }
+            int8_t temp = DHT11_read().temperature;
+            char text[5];
+            sprintf(text, "%d", temp);
+            printf("Temperature is: %d\r\n", temp);
+            msg_id = esp_mqtt_client_publish(client, "home/living_room/temperature", text, 0, 1, 0);
+            ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);        
         }
         else if(strcmp(topic,"req/home/living_room/humidity") == 0){
-            int humidity = DHT11_read().humidity;
-            char text[3];
+            int8_t humidity = DHT11_read().humidity;
+            char text[5];
             sprintf(text, "%d", humidity);
             printf("Humidity is: %d\r\n", humidity);
             msg_id = esp_mqtt_client_publish(client, "home/living_room/humidity", text, 0, 1, 0);
