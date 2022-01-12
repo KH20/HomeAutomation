@@ -52,14 +52,14 @@ void sendSensorData(esp_mqtt_client_handle_t client){
         previousTemp = temp;
         char textTemp[5];
         sprintf(textTemp, "%d", temp);
-        msg_id = esp_mqtt_client_publish(client, "home/living_room/temperature", textTemp, 0, 1, 0);
+        msg_id = esp_mqtt_client_publish(client, "home/living_room/temperature", textTemp, 0, 1, 1);
         ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
     }
     if(humidity != previousHumidity){
         previousHumidity = humidity;
         char textHumidity[5];
         sprintf(textHumidity, "%d", humidity);
-        msg_id = esp_mqtt_client_publish(client, "home/living_room/humidity", textHumidity, 0, 1, 0);
+        msg_id = esp_mqtt_client_publish(client, "home/living_room/humidity", textHumidity, 0, 1, 1);
         ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
     }
 
