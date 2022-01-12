@@ -5,6 +5,17 @@ const app = express();
 const port = 5000;
 const client = "mongodb://192.168.0.29:27017/homeautomation";
 const mqtt = require("mqtt");
+const cors = require("cors");
+
+app.use(cors());
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept"
+    );
+    next();
+});
 
 const options = {
     protocol: "websockets",
@@ -56,6 +67,40 @@ mqttClient.on("message", function (topic, message) {
 
 app.get("/", (req, res) => {
     res.send("Hello World!");
+});
+
+app.get("/api/:home/:room/:sensor/:timeStart/:timeEnd", (req, res) => {
+    let home = req.params.home;
+    let room = req.params.room;
+    let sensor = req.params.sensor;
+    let timeStart = req.params.timeStart;
+    let timeEnd = req.params.timeEnd;
+    console.log(timeStart);
+
+    Sensor.find(
+        {
+            home: home,
+            room: room,
+            sensor: sensor,
+            $and: [{ date: { $gte: timeStart } }, { date: { $lte: timeEnd } }],
+        },
+        function (err, data) {
+            if (!err) {
+                res.json(data);
+            } else {
+                console.log("Get Data Failed");
+                res.send("BAD REQUEST");
+            }
+        }
+    );
+
+    // Sensor.find((err, data) => {
+    //     if (!err) {
+    //         res.json(data);
+    //     } else {
+    //         console.log("Get Data Failed");
+    //     }
+    // });
 });
 
 //home/room/sensor/value
