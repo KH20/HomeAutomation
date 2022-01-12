@@ -16,7 +16,6 @@ import {
     Tooltip,
 } from "recharts";
 import mqtt from "mqtt";
-import isEqual from "lodash.isequal";
 
 let options = {
     protocol: "websockets",
@@ -65,7 +64,6 @@ function App() {
             let sensor = null;
             let note = null;
             let temp_data = null;
-            let previousData = roomAttributes;
 
             if (keys[0] === "home") {
                 home = keys[0];
@@ -75,15 +73,10 @@ function App() {
                 switch (sensor) {
                     case "temperature":
                     case "humidity":
-                        if (!isEqual(temp_data, previousData)) {
-                            note = parseFloat(message);
-                            temp_data = roomAttributes;
-                            temp_data[room].attributes[sensor] = note;
-                            let postRoute = `http://localhost:5000/api/${home}/${room}/${sensor}/${message}`;
-                            fetch(postRoute, { method: "POST" });
-                            setRoomAttributes({ ...temp_data });
-                        }
-
+                        note = parseFloat(message);
+                        temp_data = roomAttributes;
+                        temp_data[room].attributes[sensor] = note;
+                        setRoomAttributes({ ...temp_data });
                         break;
                 }
             } else if (keys[0] === "feedback") {
@@ -115,8 +108,6 @@ function App() {
     const handleControls = (room, sensor, value) => {
         let val = value.toString();
         client.publish("home/" + room + "/" + sensor, val);
-        let postRoute = `http://localhost:5000/api/home/${room}/${sensor}/${val}`;
-        fetch(postRoute, { method: "POST" });
     };
 
     const stringToBool = (message) => {
