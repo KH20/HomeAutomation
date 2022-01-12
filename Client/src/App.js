@@ -102,7 +102,7 @@ function App() {
             .format("YYYY-MM-DD[T]HH:mm");
 
         let uri =
-            "http://localhost:5000/api/home/" +
+            "http://192.168.0.15:5000/api/home/" +
             room +
             "/" +
             attribute.toLowerCase() +
@@ -173,7 +173,7 @@ function App() {
                             <Dialog
                                 handleClose={handleClose}
                                 handleOpen={openRoom === room}
-                                maxWidth="lg"
+                                maxWidth="xl"
                                 title={capitaliseAllWords(room, "_")}
                             >
                                 <DialogContent>
@@ -194,7 +194,7 @@ function App() {
                                     <div className="DialogChart">
                                         <center>
                                             <LineChart
-                                                width={800}
+                                                width={1700}
                                                 height={300}
                                                 data={roomData[room]}
                                                 margin={{
