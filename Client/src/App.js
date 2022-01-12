@@ -25,23 +25,15 @@ let options = {
 
 let data = getData();
 let rooms = [];
-// const roomData = {
-//     living_room: [
-//         { name: "06:00", Temperature: 23, Humidity: 30, Light: 100, Noise: 34 },
-//         { name: "07:00", Temperature: 26, Humidity: 28, Light: 100, Noise: 30 },
-//         { name: "08:00", Temperature: 21, Humidity: 25, Light: 0, Noise: 0 },
-//         { name: "09:00", Temperature: 16, Humidity: 34, Light: 0, Noise: 100 },
-//         { name: "10:00", Temperature: 30, Humidity: 27, Light: 0, Noise: 0 },
-//     ],
-//     bedroom: [
-//         { name: "06:00", Temperature: 13 },
-//         { name: "07:00", Temperature: 14 },
-//         { name: "08:00", Temperature: 14 },
-//         { name: "09:00", Temperature: 14 },
-//         { name: "10:00", Temperature: 11 },
-//     ],
-// };
-
+const init_data = {
+    living_room: [
+        { name: "06:00", Temperature: 23, Humidity: 30, Light: 100, Noise: 34 },
+        { name: "07:00", Temperature: 26, Humidity: 28, Light: 100, Noise: 30 },
+        { name: "08:00", Temperature: 21, Humidity: 25, Light: 0, Noise: 0 },
+        { name: "09:00", Temperature: 16, Humidity: 34, Light: 0, Noise: 100 },
+        { name: "10:00", Temperature: 30, Humidity: 27, Light: 0, Noise: 0 },
+    ],
+};
 for (let room in data) {
     rooms.push(room);
 }
@@ -95,6 +87,7 @@ function App() {
 
     const handleOpen = async (room) => {
         setOpenRoom(room);
+        setRoomData(init_data);
         handleOpenTab(room, "Temperature");
     };
 

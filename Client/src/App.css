@@ -1,6 +1,6 @@
 .grid {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     flex-wrap: wrap;
 }
 
@@ -41,4 +41,8 @@
 .controlSwitches {
     display: flex;
     flex-direction: row;
+}
+
+.room {
+    margin-left: 1%;
 }
