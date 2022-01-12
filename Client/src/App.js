@@ -17,6 +17,7 @@ import {
     Tooltip,
 } from "recharts";
 import mqtt from "mqtt";
+import initialisationData from "./initData";
 
 let options = {
     protocol: "websockets",
@@ -26,14 +27,10 @@ let options = {
 let data = getData();
 let rooms = [];
 const init_data = {
-    living_room: [
-        { name: "06:00", Temperature: 23, Humidity: 30, Light: 100, Noise: 34 },
-        { name: "07:00", Temperature: 26, Humidity: 28, Light: 100, Noise: 30 },
-        { name: "08:00", Temperature: 21, Humidity: 25, Light: 0, Noise: 0 },
-        { name: "09:00", Temperature: 16, Humidity: 34, Light: 0, Noise: 100 },
-        { name: "10:00", Temperature: 30, Humidity: 27, Light: 0, Noise: 0 },
-    ],
+    living_room: initialisationData,
 };
+
+console.log(init_data);
 for (let room in data) {
     rooms.push(room);
 }
@@ -138,6 +135,7 @@ function App() {
 
     const handleControls = (room, sensor, value) => {
         let val = value.toString();
+        console.log(sensor, value);
         client.publish("home/" + room + "/" + sensor, val);
     };
 
