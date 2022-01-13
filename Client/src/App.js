@@ -70,6 +70,7 @@ function App() {
                 switch (sensor) {
                     case "temperature":
                     case "humidity":
+                    case "light":
                         note = parseFloat(message);
                         temp_data = roomAttributes;
                         temp_data[room].attributes[sensor] = note;
@@ -206,7 +207,7 @@ function App() {
                                     <div className="DialogChart">
                                         <center>
                                             <LineChart
-                                                width={1900}
+                                                width={1700}
                                                 height={300}
                                                 data={roomData[room]}
                                                 margin={{
