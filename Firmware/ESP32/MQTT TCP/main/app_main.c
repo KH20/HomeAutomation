@@ -18,6 +18,7 @@
 #include "driver/timer.h"
 #include "driver/gpio.h"
 #include "dht11.h"
+#include "bh1750.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -39,14 +40,18 @@ static const char *TAG = "MQTT_EXAMPLE";
 
 int8_t previousTemp = -128;
 int8_t previousHumidity = -128;
+double previousLight = -1;
 
 void sendSensorData(esp_mqtt_client_handle_t client){
-    int temp = DHT11_read().temperature;
-    int humidity = DHT11_read().humidity;
+    int8_t temp = DHT11_read().temperature;
+    int8_t humidity = DHT11_read().humidity;
+    double light = bh1750_read();
     int msg_id;
 
     printf("Temperature is: %d\r\n", temp);
     printf("Humidity is: %d\r\n", humidity);
+    printf("Light is: %f\r\n", light);
+
 
     if(temp != previousTemp){
         previousTemp = temp;
@@ -62,6 +67,13 @@ void sendSensorData(esp_mqtt_client_handle_t client){
         msg_id = esp_mqtt_client_publish(client, "home/living_room/humidity", textHumidity, 0, 1, 1);
         ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
     }
+    if(light != previousLight){
+        previousLight = light;
+        char textLight[6];
+        sprintf(textLight, "%.2f", light);
+        msg_id = esp_mqtt_client_publish(client, "home/living_room/light", textLight, 0, 1, 1);
+        ESP_LOGI(TAG, "sent publish successful, msg_id=%d", msg_id);
+    }
 
 }
 
@@ -70,6 +82,8 @@ static void DHT11_Task(void *pvParameter){
 esp_mqtt_client_handle_t client = pvParameter;
 
     DHT11_init(GPIO_NUM_27);
+    
+    bh1750_init();
 
     for(;;){
         sendSensorData(client);
@@ -284,6 +298,7 @@ void app_main(void)
     ESP_ERROR_CHECK(nvs_flash_init());
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
+
 
     /* This helper function configures Wi-Fi or Ethernet, as selected in menuconfig.
      * Read "Establishing Wi-Fi or Ethernet Connection" section in
