@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
 
 const setActiveButton = (event, props) => {
     let button = event.currentTarget;
-    let buttonId = button.id;
+    let buttonId = button.name;
     let timeScales = buttonId.split(" ");
     console.log(timeScales);
 
@@ -60,7 +60,8 @@ export default function BasicButtonGroup(props) {
             >
                 {timeScales.map((button, index) => (
                     <Button
-                        id={button}
+                        name={button}
+                        className={button == "4 HR" ? "timeButtonActive" : ""}
                         onClick={(event) => setActiveButton(event, props)}
                     >
                         {button}
