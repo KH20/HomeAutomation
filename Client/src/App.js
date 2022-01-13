@@ -21,6 +21,7 @@ import {
     XAxis,
     YAxis,
     Tooltip,
+    ResponsiveContainer,
 } from "recharts";
 import mqtt from "mqtt";
 import initialisationData from "./initData";
@@ -36,7 +37,6 @@ const init_data = {
     living_room: initialisationData,
 };
 
-console.log(init_data);
 for (let room in data) {
     rooms.push(room);
 }
@@ -123,21 +123,22 @@ function App() {
             ":00/" +
             date +
             ":00";
-        console.log(uri);
+
         let response = await fetch(uri, { method: "GET" });
         if (response.ok) {
             const data = await response.json();
 
             let roomDat = JSON.parse(`{ "${room}": [] }`);
-
+            let maxVal = -65535;
             data.map((record) => {
                 let time = dayjs(record.date);
                 let hour = time.get("hour");
                 let min = time.get("minute");
                 let dat = JSON.parse(
-                    `{"name": "${hour}:${min}", "${attribute}":"${record.value}"}`
+                    `{"name": "${hour}:${min}", "${attribute}":${parseFloat(
+                        record.value
+                    )}}`
                 );
-                console.log(dat);
                 roomDat[room].push(dat);
             });
 
@@ -148,7 +149,7 @@ function App() {
 
     const handleControls = (room, sensor, value) => {
         let val = value.toString();
-        console.log(sensor, value);
+
         client.publish("home/" + room + "/" + sensor, val);
     };
 
@@ -204,36 +205,46 @@ function App() {
                                             )
                                         }
                                     />
-                                    <div className="DialogChart">
+                                    <div>
                                         <center>
-                                            <LineChart
-                                                width={1700}
-                                                height={300}
-                                                data={roomData[room]}
-                                                margin={{
-                                                    top: 5,
-                                                    right: 40,
-                                                    bottom: 5,
-                                                    left: 0,
-                                                }}
-                                            >
-                                                <Line
-                                                    type="monotone"
-                                                    dataKey={capitaliseAllWords(
-                                                        openTab,
-                                                        " "
-                                                    )}
-                                                    stroke="#8884d8"
-                                                    strokeWidth="3"
-                                                />
-                                                <CartesianGrid
-                                                    stroke="#ccc"
-                                                    strokeDasharray="5 5"
-                                                />
-                                                <XAxis dataKey="name" />
-                                                <YAxis />
-                                                <Tooltip />
-                                            </LineChart>
+                                            <div className="DialogChart">
+                                                <ResponsiveContainer
+                                                    width="99%"
+                                                    aspect={3}
+                                                    maxHeight={400}
+                                                >
+                                                    <LineChart
+                                                        data={roomData[room]}
+                                                        margin={{
+                                                            top: 0,
+                                                            right: 40,
+                                                            bottom: 5,
+                                                            left: 0,
+                                                        }}
+                                                    >
+                                                        <Line
+                                                            type="monotone"
+                                                            dataKey={capitaliseAllWords(
+                                                                openTab,
+                                                                " "
+                                                            )}
+                                                            stroke="#8884d8"
+                                                            strokeWidth="3"
+                                                        />
+                                                        <CartesianGrid
+                                                            stroke="#ccc"
+                                                            strokeDasharray="5 5"
+                                                        />
+                                                        <XAxis dataKey="name" />
+                                                        <YAxis
+                                                            type="number"
+                                                            domain={[0, "auto"]}
+                                                        />
+                                                        <Tooltip />
+                                                    </LineChart>
+                                                </ResponsiveContainer>
+                                            </div>
+
                                             <TimeButtons
                                                 handleOpenTab={handleOpenTab}
                                                 room={room}
