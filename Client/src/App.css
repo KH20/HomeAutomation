@@ -34,8 +34,8 @@
     width: 50%;
 }
 
-.MuiDialog-paperWidthLg {
-    width: 80%;
+.MuiDialog-paperWidthFalse {
+    width: 100%;
 }
 
 .controlSwitches {
@@ -45,4 +45,13 @@
 
 .room {
     margin-left: 1%;
+}
+
+.DialogChart {
+    display: flex;
+    justify-content: center;
+}
+
+.timeButtonActive {
+    font-weight: bold !important;
 }

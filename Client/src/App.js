@@ -4,8 +4,14 @@ import ButtonAppBar from "./ButtonAppBar.js";
 import React, { useEffect } from "react";
 import Dialog from "./Dialog";
 import DialogTabs from "./DialogTabs";
+import TimeButtons from "./TimeButtons";
 import { getData } from "./Utilities";
-import { DialogContent, Typography } from "@material-ui/core";
+import {
+    Button,
+    ButtonGroup,
+    DialogContent,
+    Typography,
+} from "@material-ui/core";
 import ToggleSwitch from "./ToggleSwitch";
 import dayjs from "dayjs";
 import {
@@ -94,11 +100,16 @@ function App() {
         setOpenTab("Temperature"); //reset to default
     };
 
-    const handleOpenTab = async (room, attribute) => {
+    const handleOpenTab = async (
+        room,
+        attribute,
+        timeScaleValue = 4,
+        timeScaleIndices = "hour"
+    ) => {
         room = room.toLowerCase();
         let date = dayjs().format("YYYY-MM-DD[T]HH:mm");
         let timeStart = dayjs()
-            .subtract(4, "hour")
+            .subtract(timeScaleValue, timeScaleIndices)
             .format("YYYY-MM-DD[T]HH:mm");
 
         let uri =
@@ -111,7 +122,7 @@ function App() {
             ":00/" +
             date +
             ":00";
-
+        console.log(uri);
         let response = await fetch(uri, { method: "GET" });
         if (response.ok) {
             const data = await response.json();
@@ -125,6 +136,7 @@ function App() {
                 let dat = JSON.parse(
                     `{"name": "${hour}:${min}", "${attribute}":"${record.value}"}`
                 );
+                console.log(dat);
                 roomDat[room].push(dat);
             });
 
@@ -173,7 +185,7 @@ function App() {
                             <Dialog
                                 handleClose={handleClose}
                                 handleOpen={openRoom === room}
-                                maxWidth="xl"
+                                maxWidth="false"
                                 title={capitaliseAllWords(room, "_")}
                             >
                                 <DialogContent>
@@ -194,7 +206,7 @@ function App() {
                                     <div className="DialogChart">
                                         <center>
                                             <LineChart
-                                                width={1700}
+                                                width={1900}
                                                 height={300}
                                                 data={roomData[room]}
                                                 margin={{
@@ -221,6 +233,11 @@ function App() {
                                                 <YAxis />
                                                 <Tooltip />
                                             </LineChart>
+                                            <TimeButtons
+                                                handleOpenTab={handleOpenTab}
+                                                room={room}
+                                                sensor={openTab}
+                                            ></TimeButtons>
                                         </center>
                                     </div>
                                 </DialogContent>
